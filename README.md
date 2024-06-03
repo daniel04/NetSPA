@@ -62,3 +62,48 @@ Dentro de la carpeta `ClientApp/src/app/home` realizar lo sgte.:
 4. Agregar el proxy para el servicio REST en Proxy:
    1. Ingresar al archivo `ClientApp/proxy.conf.js`
    2. Agregar a la lista de `const PROXY_CONFIG` el nombre del servicio REST nuevo, en este caso: `"/productos"`
+
+## Acceso a la base de datos con EntityFramework con enfoque Code First
+
+Para esta sección se utiliza una base de datos PostgreSQL y las referencias de la documentación oficial de Microsoft.
+
+Abrir CMD, dirigirse a la raíz del proyecto y seguir los pasos a continuación:
+
+### 1. Configurar Entity Framework 
+
+Referencia: https://learn.microsoft.com/es-es/ef/core/get-started/overview/install
+
+1. Instalar EF de forma global: `# dotnet tool install --global dotnet-ef`
+2. Instalar herramientas de EF: `# dotnet add package Microsoft.EntityFrameworkCore.Design -v 6` **(*)**
+3. Instalar driver de conexión: `# dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -v 6` **(*)**
+
+**(*)** El parámetro `-v 6` indica la versión de .net, cambiar por la versión que usa.
+
+### 2. Conectar el proyecto a la base de datos
+
+* Referencia:  https://learn.microsoft.com/es-es/ef/core/get-started/overview/first-app?tabs=netcore-cli
+* Cadenas de conexión (si usa diferente a PostgreSql): https://learn.microsoft.com/es-es/ef/core/miscellaneous/connection-strings
+
+1. Crear la clase de Contexto el la carpeta Model `ServicesApp/Model/SpaContext.cs` (revisar los comentarios de la clase `SpaContext`)
+2. Agregar la cadena de conexión `"ConnectionStrings"` al archivo `appsettings.json` (revisar el archivo).
+3. Configurar la conexión en `Program.cs` (revisar los comentarios del archivo).
+
+### 3. Crear/actualizar las tablas de la base de datos
+
+Referencia: https://learn.microsoft.com/es-es/ef/core/get-started/overview/first-app?tabs=netcore-cli
+
+1. Crear Migración inicial con CMD: `# dotnet ef migrations add CreadoInicial`
+2. Actualizar/crear las tablas de la base de datos: `# dotnet ef database update`
+
+## Acceso a la base de datos con EntityFramework con enfoque Data base First
+
+Referencia: https://learn.microsoft.com/es-es/ef/core/managing-schemas/scaffolding/?tabs=dotnet-core-cli#required-arguments
+
+Para este enfoque seguir los pasos 1 y 2 de lo anterior luego:
+
+Crear las clases desde la base de datos: `dotnet ef dbcontext scaffold "Name=ConnectionStrings:tienda-virtual" Npgsql.EntityFrameworkCore.PostgreSQL`
+
+Donde:
+* `tienda-virtual` es el nombre de la base de datos
+* `Npgsql.EntityFrameworkCore.PostgreSQL` es el driver de conexión (cambiar al que corresponde si usa otra base de datos)
+
